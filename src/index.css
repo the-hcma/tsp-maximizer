@@ -1,5 +1,6 @@
 :root {
   --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  /* dark theme (default) */
   --bg-color: #0f172a;
   --text-color: #f8fafc;
   --text-muted: #94a3b8;
@@ -10,6 +11,39 @@
   --accent-color: #10b981;
   --warning-color: #f59e0b;
   --warning-bg: rgba(245, 158, 11, 0.1);
+  --surface-bg: rgba(15, 23, 42, 0.6);
+  --surface-bg-subtle: rgba(15, 23, 42, 0.4);
+  --btn-bg: rgba(255, 255, 255, 0.08);
+  --btn-border: rgba(255, 255, 255, 0.2);
+  --btn-bg-hover: rgba(255, 255, 255, 0.14);
+  --btn-border-hover: rgba(255, 255, 255, 0.3);
+  --hover-border: rgba(255, 255, 255, 0.2);
+  --shadow-tooltip: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+  --gradient-primary-stop: rgba(59, 130, 246, 0.15);
+  --gradient-accent-stop: rgba(16, 185, 129, 0.1);
+}
+
+[data-theme="light"] {
+  --bg-color: #f1f5f9;
+  --text-color: #0f172a;
+  --text-muted: #64748b;
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --card-border: rgba(0, 0, 0, 0.1);
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --accent-color: #059669;
+  --warning-color: #d97706;
+  --warning-bg: rgba(245, 158, 11, 0.1);
+  --surface-bg: rgba(255, 255, 255, 0.9);
+  --surface-bg-subtle: rgba(241, 245, 249, 0.8);
+  --btn-bg: rgba(0, 0, 0, 0.05);
+  --btn-border: rgba(0, 0, 0, 0.15);
+  --btn-bg-hover: rgba(0, 0, 0, 0.09);
+  --btn-border-hover: rgba(0, 0, 0, 0.22);
+  --hover-border: rgba(0, 0, 0, 0.15);
+  --shadow-tooltip: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
+  --gradient-primary-stop: rgba(59, 130, 246, 0.08);
+  --gradient-accent-stop: rgba(16, 185, 129, 0.06);
 }
 
 * {
@@ -27,10 +61,11 @@ body {
   justify-content: center;
   align-items: flex-start;
   background-image: 
-    radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, var(--gradient-primary-stop) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, var(--gradient-accent-stop) 0px, transparent 50%);
   background-attachment: fixed;
   padding: 2rem;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 h1, h2, h3 {

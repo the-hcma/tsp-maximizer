@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import { projectStrategy, computeOptimalRate } from './computations';
 
@@ -17,6 +17,18 @@ const DEFAULTS = {
 const getSliderOffset = (percent: number) => `calc(14px + (100% - 28px) * ${percent / 100})`;
 
 function App() {
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    const stored = localStorage.getItem('theme');
+    const dark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    return dark;
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  }, [isDark]);
+
   const [basePayInput, setBasePayInput] = useState<string>(DEFAULTS.basePay.toFixed(2));
   const [contributedSoFarInput, setContributedSoFarInput] = useState<string>(DEFAULTS.contributedSoFar.toFixed(2));
   const [currentRateStr, setCurrentRateStr] = useState<string>(DEFAULTS.currentRate.toString());
@@ -138,6 +150,13 @@ function App() {
   return (
     <div className="app-container">
       <header className="hero">
+        <button
+          className="theme-toggle"
+          onClick={() => setIsDark(d => !d)}
+          aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+        >
+          {isDark ? '☀️' : '🌙'}
+        </button>
         <h1>TSP Maximizer</h1>
         <p>Optimize your Thrift Savings Plan to hit the max limit precisely while capturing every dollar of agency match.</p>
         <button className="reset-btn" onClick={handleReset}>Reset to Defaults</button>
