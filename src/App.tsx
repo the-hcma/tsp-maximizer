@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './App.css';
-import { calculateMatch, projectStrategy, computeOptimalRate } from './computations';
+import { projectStrategy, computeOptimalRate } from './computations';
 
 const DEFAULTS = {
   basePay: 6177.30,
