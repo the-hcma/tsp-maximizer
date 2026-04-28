@@ -30,6 +30,12 @@ npx @the-hcma/tsp-maximizer
 
 This serves the app locally and opens it in your browser. Requires Node.js 18+.
 
+To expose the server on your local network (e.g. for mobile testing):
+
+```bash
+npx @the-hcma/tsp-maximizer --host
+```
+
 ## Getting Started
 
 This repository is designed to be maintained within the `the-hcma` GitHub organization.
@@ -75,6 +81,11 @@ To start the Vite development server:
 pnpm run dev
 ```
 The application will bind to an available local port and output the URL in your terminal.
+
+To expose the server on your local network (useful for testing on other devices):
+```bash
+pnpm run dev --host
+```
 
 ### Building for Production
 
