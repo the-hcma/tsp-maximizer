@@ -64,6 +64,9 @@ jobs:
       - name: Type check + lint + format
         run: pnpm run check
 
+      - name: Unit tests
+        run: pnpm test
+
   secret-scan:
     name: Secret Scan
     needs: guard

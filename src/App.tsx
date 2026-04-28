@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './App.css';
+import { projectStrategy, computeOptimalRate } from './computations';
 
 const DEFAULTS = {
   basePay: 6177.30,
@@ -18,7 +19,7 @@ const getSliderOffset = (percent: number) => `calc(14px + (100% - 28px) * ${perc
 function App() {
   const [basePayInput, setBasePayInput] = useState<string>(DEFAULTS.basePay.toFixed(2));
   const [contributedSoFarInput, setContributedSoFarInput] = useState<string>(DEFAULTS.contributedSoFar.toFixed(2));
-  const [currentRate, setCurrentRate] = useState<number>(DEFAULTS.currentRate);
+  const [currentRateStr, setCurrentRateStr] = useState<string>(DEFAULTS.currentRate.toString());
   const [agencyAutoSoFarInput, setAgencyAutoSoFarInput] = useState<string>(DEFAULTS.agencyAutoSoFar.toFixed(2));
   const [agencyMatchSoFarInput, setAgencyMatchSoFarInput] = useState<string>(DEFAULTS.agencyMatchSoFar.toFixed(2));
   const [maxAnnualContributionInput, setMaxAnnualContributionInput] = useState<string>(DEFAULTS.maxAnnualContribution.toFixed(2));
@@ -37,10 +38,15 @@ function App() {
     return currentMonth + (today.getDate() > 15 ? 1 : 0);
   });
 
+  // Derive numeric currentRate from the string state
+  let currentRate = parseInt(currentRateStr, 10);
+  if (isNaN(currentRate)) currentRate = 0;
+  currentRate = Math.max(0, Math.min(100, currentRate));
+
   const handleReset = () => {
     setBasePayInput(DEFAULTS.basePay.toFixed(2));
     setContributedSoFarInput(DEFAULTS.contributedSoFar.toFixed(2));
-    setCurrentRate(DEFAULTS.currentRate);
+    setCurrentRateStr(DEFAULTS.currentRate.toString());
     setAgencyAutoSoFarInput(DEFAULTS.agencyAutoSoFar.toFixed(2));
     setAgencyMatchSoFarInput(DEFAULTS.agencyMatchSoFar.toFixed(2));
     setMaxAnnualContributionInput(DEFAULTS.maxAnnualContribution.toFixed(2));
@@ -58,133 +64,49 @@ function App() {
 
   const remainingPayPeriods = Math.max(0, totalPayPeriods - currentPeriod);
 
-  const calculateMatch = (ratePercent: number) => {
-    if (ratePercent < 1) return 0;
-    let match;
-    const rate = ratePercent / 100;
-    if (rate > 0.03) {
-      match = 0.03 + Math.min(rate - 0.03, 0.02) * 0.5;
-    } else {
-      match = rate;
-    }
-    return Math.min(match, maxMatchPercent / 100);
+  const sharedParams = {
+    basePay,
+    contributedSoFar,
+    agencyMatchSoFar,
+    agencyAutoSoFar,
+    maxAnnualContribution,
+    autoContributionPercent,
+    maxMatchPercent,
+    remainingPayPeriods,
   };
 
   // --- CURRENT RATE PROJECTIONS ---
-  let tempContribution = contributedSoFar;
-  let tempMatch = agencyMatchSoFar;
-  const autoPerPeriod = basePay * (autoContributionPercent / 100);
-  let tempAuto = agencyAutoSoFar;
-  let periodsWithLostMatch = 0;
-  let hitLimitEarly = false;
-  let lostMatchAmount = 0;
+  const {
+    totalContribution: totalCurrentContribution,
+    totalMatch: totalCurrentMatch,
+    totalAuto,
+    periodsWithLostMatch,
+    hitLimitEarly,
+    lostMatchAmount,
+  } = projectStrategy({ ...sharedParams, ratePercent: currentRate });
 
-  for (let i = 0; i < remainingPayPeriods; i++) {
-    tempAuto += autoPerPeriod;
-
-    const roomLeft = Math.max(0, maxAnnualContribution - tempContribution);
-    const desiredContribution = basePay * (currentRate / 100);
-    
-    let actualRatePercent = currentRate;
-    if (desiredContribution > roomLeft) {
-      hitLimitEarly = true;
-      tempContribution += roomLeft;
-      actualRatePercent = basePay > 0 ? (roomLeft / basePay) * 100 : 0;
-    } else {
-      tempContribution += desiredContribution;
-    }
-    
-    const matchWeActuallyGot = basePay * calculateMatch(actualRatePercent);
-    const maximumPossibleMatch = basePay * (maxMatchPercent / 100);
-    const matchWeWouldHaveGotten = basePay * calculateMatch(currentRate);
-    
-    tempMatch += matchWeActuallyGot;
-    
-    if (matchWeActuallyGot < matchWeWouldHaveGotten) {
-      periodsWithLostMatch++;
-    }
-    
-    if (matchWeActuallyGot < maximumPossibleMatch) {
-      lostMatchAmount += (maximumPossibleMatch - matchWeActuallyGot);
-    }
-  }
-
-  const totalCurrentContribution = tempContribution;
-  const totalCurrentMatch = tempMatch;
-  const totalAuto = tempAuto;
   const totalCurrentValue = totalCurrentContribution + totalCurrentMatch + totalAuto;
 
-
   // --- OPTIMAL PROJECTIONS ---
-  const remainingContributionLimit = Math.max(0, maxAnnualContribution - contributedSoFar);
-  const rawOptimalContributionRate = remainingPayPeriods > 0 && basePay > 0 
-    ? (remainingContributionLimit / remainingPayPeriods / basePay) * 100 
-    : 0;
-  const optimalContributionRate = Math.min(100, Math.ceil(rawOptimalContributionRate));
+  const optimalContributionRate = computeOptimalRate({ contributedSoFar, maxAnnualContribution, remainingPayPeriods, basePay });
 
-  let tempOptContrib = contributedSoFar;
-  let tempOptMatch = agencyMatchSoFar;
-  let tempOptAuto = agencyAutoSoFar;
-  let optStrategyLostMatch = 0;
+  const {
+    totalContribution: totalOptimalContribution,
+    totalMatch: totalOptimalMatch,
+    totalAuto: totalOptimalAuto,
+    lostMatchAmount: optStrategyLostMatch,
+  } = projectStrategy({ ...sharedParams, ratePercent: optimalContributionRate });
 
-  for (let i = 0; i < remainingPayPeriods; i++) {
-    tempOptAuto += autoPerPeriod;
-
-    const roomLeft = Math.max(0, maxAnnualContribution - tempOptContrib);
-    const desiredContribution = basePay * (optimalContributionRate / 100);
-    
-    let actualRatePercent = optimalContributionRate;
-    if (desiredContribution > roomLeft) {
-      tempOptContrib += roomLeft;
-      actualRatePercent = basePay > 0 ? (roomLeft / basePay) * 100 : 0;
-    } else {
-      tempOptContrib += desiredContribution;
-    }
-    
-    const matchWeActuallyGot = basePay * calculateMatch(actualRatePercent);
-    const maximumPossibleMatch = basePay * (maxMatchPercent / 100);
-    
-    tempOptMatch += matchWeActuallyGot;
-    
-    if (matchWeActuallyGot < maximumPossibleMatch) {
-      optStrategyLostMatch += (maximumPossibleMatch - matchWeActuallyGot);
-    }
-  }
-
-  const totalOptimalContribution = tempOptContrib;
-  const totalOptimalMatch = tempOptMatch;
-  const totalOptimalAuto = tempOptAuto;
   const totalOptimalValue = totalOptimalContribution + totalOptimalMatch + totalOptimalAuto;
-
   const willLoseMatch = optStrategyLostMatch > 0;
 
   // --- CAPTURE MAX MATCH STRATEGY (5%) ---
-  const minMatchRate = 5;
-  let tempMinContrib = contributedSoFar;
-  let tempMinMatch = agencyMatchSoFar;
-  let tempMinAuto = agencyAutoSoFar;
+  const {
+    totalContribution: totalMinContrib,
+    totalMatch: totalMinMatch,
+    totalAuto: totalMinAuto,
+  } = projectStrategy({ ...sharedParams, ratePercent: 5 });
 
-  for (let i = 0; i < remainingPayPeriods; i++) {
-    tempMinAuto += autoPerPeriod;
-
-    const roomLeft = Math.max(0, maxAnnualContribution - tempMinContrib);
-    const desiredContribution = basePay * (minMatchRate / 100);
-    
-    let actualRatePercent = minMatchRate;
-    if (desiredContribution > roomLeft) {
-      tempMinContrib += roomLeft;
-      actualRatePercent = basePay > 0 ? (roomLeft / basePay) * 100 : 0;
-    } else {
-      tempMinContrib += desiredContribution;
-    }
-    
-    const matchWeActuallyGot = basePay * calculateMatch(actualRatePercent);
-    tempMinMatch += matchWeActuallyGot;
-  }
-
-  const totalMinContrib = tempMinContrib;
-  const totalMinMatch = tempMinMatch;
-  const totalMinAuto = tempMinAuto;
   const totalMinValue = totalMinContrib + totalMinMatch + totalMinAuto;
 
   let currentStrategyTooltip;
@@ -250,9 +172,27 @@ function App() {
             <div className="input-group slider-group" style={{ marginBottom: '1rem' }}>
               <div className="slider-label" style={{ marginBottom: '1rem', alignItems: 'center' }}>
                 <span>Contribution Rate</span>
-                <span className="slider-value" style={{ width: 'auto', color: 'var(--text-color)', fontSize: '1.25rem', fontWeight: 600 }}>
-                  {Math.round(currentRate)}%
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <input
+                    type="text"
+                    className="slider-value-input"
+                    value={currentRateStr}
+                    onChange={e => {
+                      const val = e.target.value.replace(/[^0-9]/g, '');
+                      if (val === '') { setCurrentRateStr(''); return; }
+                      const num = parseInt(val, 10);
+                      if (num > 100) setCurrentRateStr('100');
+                      else setCurrentRateStr(val);
+                    }}
+                    onBlur={() => {
+                      const num = parseInt(currentRateStr, 10);
+                      if (isNaN(num) || num < 0) setCurrentRateStr('0');
+                      else if (num > 100) setCurrentRateStr('100');
+                      else setCurrentRateStr(num.toString());
+                    }}
+                  />
+                  <span style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--text-color)' }}>%</span>
+                </div>
               </div>
               
               <div className="slider-container" style={{ position: 'relative', width: '100%' }}>
@@ -273,7 +213,7 @@ function App() {
                   max="100" 
                   step="1"
                   value={currentRate} 
-                  onChange={e => setCurrentRate(Number(e.target.value))}
+                  onChange={e => setCurrentRateStr(e.target.value)}
                 />
               </div>
 
