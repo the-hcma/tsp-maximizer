@@ -1,5 +1,11 @@
 # TSP Contribution Maximizer
 
+[![CI](https://github.com/the-hcma/tsp-maximizer/actions/workflows/ci.yml/badge.svg)](https://github.com/the-hcma/tsp-maximizer/actions/workflows/ci.yml)
+[![Release](https://github.com/the-hcma/tsp-maximizer/actions/workflows/release-please.yml/badge.svg)](https://github.com/the-hcma/tsp-maximizer/actions/workflows/release-please.yml)
+[![npm](https://img.shields.io/npm/v/%40the-hcma%2Ftsp-maximizer)](https://www.npmjs.com/package/@the-hcma/tsp-maximizer)
+[![npm downloads](https://img.shields.io/npm/dm/%40the-hcma%2Ftsp-maximizer)](https://www.npmjs.com/package/@the-hcma/tsp-maximizer)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 A lightweight, highly accurate React/TypeScript web utility designed to optimize Thrift Savings Plan (TSP) contribution rates for federal employees (BRS/FERS).
 
 ![TSP Maximizer — light mode](docs/tsp-maximizer.png)
@@ -13,6 +19,16 @@ This tool dynamically simulates the exact mathematical mechanics of federal payr
 - **Fractional Pay Period Simulation:** Accurately models the exact edge cases of federal payroll, such as hitting the IRS limit mid-pay-period and evaluating if the fractional spillover is large enough to trigger the 5% matching threshold.
 - **Dynamic Lost Match Alerts:** Explicitly calculates and warns you exactly how many dollars of agency matching you are leaving on the table if you undercontribute or overcontribute.
 - **Premium Interface:** Built with a fully responsive, glassmorphic UI with dark and light mode support.
+
+## Quick Start
+
+Run directly from npm — no installation required:
+
+```bash
+npx @the-hcma/tsp-maximizer
+```
+
+This serves the app locally and opens it in your browser. Requires Node.js 18+.
 
 ## Getting Started
 
@@ -69,7 +85,7 @@ pnpm run build
 The compiled assets will be placed in the `dist/` directory, ready to be deployed to any static hosting service.
 
 ## Tech Stack
-- **Framework:** React 18
+- **Framework:** React 19
 - **Build Tool:** Vite
 - **Language:** TypeScript
 - **Styling:** Vanilla CSS (CSS Variables, Flexbox/Grid)
