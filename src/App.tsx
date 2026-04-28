@@ -13,6 +13,8 @@ const DEFAULTS = {
   totalPayPeriods: 12
 };
 
+const getSliderOffset = (percent: number) => `calc(14px + (100% - 28px) * ${percent / 100})`;
+
 function App() {
   const [basePayInput, setBasePayInput] = useState<string>(DEFAULTS.basePay.toFixed(2));
   const [contributedSoFarInput, setContributedSoFarInput] = useState<string>(DEFAULTS.contributedSoFar.toFixed(2));
@@ -58,7 +60,7 @@ function App() {
 
   const calculateMatch = (ratePercent: number) => {
     if (ratePercent < 1) return 0;
-    let match = 0;
+    let match;
     const rate = ratePercent / 100;
     if (rate > 0.03) {
       match = 0.03 + Math.min(rate - 0.03, 0.02) * 0.5;
@@ -118,7 +120,7 @@ function App() {
   const rawOptimalContributionRate = remainingPayPeriods > 0 && basePay > 0 
     ? (remainingContributionLimit / remainingPayPeriods / basePay) * 100 
     : 0;
-  const optimalContributionRate = Math.ceil(rawOptimalContributionRate);
+  const optimalContributionRate = Math.min(100, Math.ceil(rawOptimalContributionRate));
 
   let tempOptContrib = contributedSoFar;
   let tempOptMatch = agencyMatchSoFar;
@@ -161,7 +163,6 @@ function App() {
   let tempMinContrib = contributedSoFar;
   let tempMinMatch = agencyMatchSoFar;
   let tempMinAuto = agencyAutoSoFar;
-  let minStrategyLostMatch = 0;
 
   for (let i = 0; i < remainingPayPeriods; i++) {
     tempMinAuto += autoPerPeriod;
@@ -178,13 +179,7 @@ function App() {
     }
     
     const matchWeActuallyGot = basePay * calculateMatch(actualRatePercent);
-    const maximumPossibleMatch = basePay * (maxMatchPercent / 100);
-    
     tempMinMatch += matchWeActuallyGot;
-    
-    if (matchWeActuallyGot < maximumPossibleMatch) {
-      minStrategyLostMatch += (maximumPossibleMatch - matchWeActuallyGot);
-    }
   }
 
   const totalMinContrib = tempMinContrib;
@@ -192,7 +187,7 @@ function App() {
   const totalMinAuto = tempMinAuto;
   const totalMinValue = totalMinContrib + totalMinMatch + totalMinAuto;
 
-  let currentStrategyTooltip = "";
+  let currentStrategyTooltip;
   if (currentRate < 5) {
      currentStrategyTooltip = `Because your rate is under 5%, you are missing out on $${lostMatchAmount.toFixed(2)} in free agency matching money over the remaining pay periods.`;
   } else if (periodsWithLostMatch > 0) {
@@ -252,24 +247,42 @@ function App() {
                 onBlur={e => handleMoneyBlur(setContributedSoFarInput, e.target.value)}
               />
             </div>
-            <div className="input-group slider-group">
-              <div className="slider-label" style={{ marginBottom: '0.5rem', alignItems: 'center' }}>
-                <span>Current Rate</span>
-                <span className="slider-value" style={{ width: 'auto', color: 'var(--text-color)', fontSize: '1.1rem', fontWeight: 600 }}>
+            <div className="input-group slider-group" style={{ marginBottom: '1rem' }}>
+              <div className="slider-label" style={{ marginBottom: '1rem', alignItems: 'center' }}>
+                <span>Contribution Rate</span>
+                <span className="slider-value" style={{ width: 'auto', color: 'var(--text-color)', fontSize: '1.25rem', fontWeight: 600 }}>
                   {Math.round(currentRate)}%
                 </span>
               </div>
-              <input 
-                type="range" 
-                min="0" 
-                max="100" 
-                step="1"
-                value={currentRate} 
-                onChange={e => setCurrentRate(Number(e.target.value))} 
-              />
-              <div className="slider-ticks" style={{ padding: '0 5px' }}>
-                <span style={{ width: 'auto', textAlign: 'left' }}>0%</span>
-                <span style={{ width: 'auto', textAlign: 'right' }}>100%</span>
+              
+              <div className="slider-container" style={{ position: 'relative', width: '100%' }}>
+                <div className="slider-track-wrapper">
+                  <div className="slider-track-fill" style={{ width: getSliderOffset(currentRate) }}></div>
+                  {[0, 25, 50, 75, 100].map(val => (
+                    <div 
+                      key={val} 
+                      className={`slider-node ${currentRate >= val ? 'active' : ''}`}
+                      style={{ left: getSliderOffset(val) }}
+                    ></div>
+                  ))}
+                </div>
+                <input 
+                  type="range" 
+                  className="custom-slider"
+                  min="0" 
+                  max="100" 
+                  step="1"
+                  value={currentRate} 
+                  onChange={e => setCurrentRate(Number(e.target.value))}
+                />
+              </div>
+
+              <div className="slider-ticks-container">
+                <span style={{ left: getSliderOffset(0) }}>0</span>
+                <span style={{ left: getSliderOffset(25) }}>25</span>
+                <span style={{ left: getSliderOffset(50) }}>50</span>
+                <span style={{ left: getSliderOffset(75) }}>75</span>
+                <span style={{ left: getSliderOffset(100) }}>100</span>
               </div>
             </div>
             <div className="input-group">
@@ -306,8 +319,8 @@ function App() {
               <label>Total Pay Periods</label>
               <input type="number" value={totalPayPeriods} onChange={e => setTotalPayPeriods(Number(e.target.value))} />
             </div>
-            <div className="input-group slider-group">
-              <div className="slider-label">
+            <div className="input-group slider-group" style={{ marginBottom: '1rem' }}>
+              <div className="slider-label" style={{ marginBottom: '1rem' }}>
                 <span>Current Pay Period</span>
                 <span className="slider-value" style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.2rem', width: '250px' }}>
                   <span style={{ display: 'inline-block', width: '3ch', textAlign: 'right' }}>{currentPeriod}</span>
@@ -318,17 +331,32 @@ function App() {
                   <span>)</span>
                 </span>
               </div>
-              <input 
-                type="range" 
-                min="0" 
-                max={totalPayPeriods} 
-                value={currentPeriod} 
-                onChange={e => setCurrentPeriod(Number(e.target.value))} 
-                list="months-ticks"
-              />
-              <div className="slider-ticks">
+              <div className="slider-container" style={{ position: 'relative', width: '100%' }}>
+                <div className="slider-track-wrapper">
+                  <div className="slider-track-fill" style={{ width: getSliderOffset(currentPeriod > 0 ? (currentPeriod / totalPayPeriods) * 100 : 0) }}></div>
+                  {Array.from({ length: totalPayPeriods + 1 }).map((_, i) => {
+                    const percent = (i / totalPayPeriods) * 100;
+                    return (
+                      <div 
+                        key={i} 
+                        className={`slider-node ${currentPeriod >= i ? 'active' : ''}`}
+                        style={{ left: getSliderOffset(percent) }}
+                      ></div>
+                    );
+                  })}
+                </div>
+                <input 
+                  type="range" 
+                  className="custom-slider"
+                  min="0" 
+                  max={totalPayPeriods} 
+                  value={currentPeriod} 
+                  onChange={e => setCurrentPeriod(Number(e.target.value))} 
+                />
+              </div>
+              <div className="slider-ticks-container">
                 {Array.from({ length: totalPayPeriods + 1 }).map((_, i) => (
-                  <span key={i}>{i}</span>
+                  <span key={i} style={{ left: getSliderOffset((i / totalPayPeriods) * 100) }}>{i}</span>
                 ))}
               </div>
             </div>

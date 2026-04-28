@@ -165,20 +165,113 @@
   font-family: monospace;
 }
 
-.slider-ticks {
-  display: flex;
-  justify-content: space-between;
-  padding: 0 8px; /* Offset for range thumb */
+/* --- CUSTOM SLIDER UI --- */
+
+.slider-track-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  right: 12px;
+  transform: translateY(-50%);
+  height: 8px;
+  background: var(--card-border);
+  border-radius: 4px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.slider-track-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: var(--primary-color);
+  border-radius: 4px;
+  transition: width 0.1s ease-out;
+}
+
+.slider-node {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  background: var(--card-border);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.4);
+  transition: background 0.2s ease-out;
+  z-index: 2;
+}
+
+.slider-node.active {
+  background: var(--primary-color);
+  box-shadow: none;
+}
+
+.custom-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 32px;
+  background: transparent;
+  position: relative;
+  z-index: 3;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  cursor: pointer;
+}
+
+.custom-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 28px;
+  width: 28px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  border: 5px solid rgba(255,255,255,0.9);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transform: scale(1);
+  transition: transform 0.1s;
+}
+
+.custom-slider::-webkit-slider-thumb:hover,
+.custom-slider:active::-webkit-slider-thumb {
+  transform: scale(1.1);
+}
+
+.custom-slider::-moz-range-thumb {
+  height: 28px;
+  width: 28px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  border: 5px solid rgba(255,255,255,0.9);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transform: scale(1);
+  transition: transform 0.1s;
+}
+
+/* --- END CUSTOM SLIDER --- */
+
+.slider-ticks-container {
+  position: relative;
+  height: 20px;
+  margin-top: 0.5rem;
+  margin-left: 14px; /* matches track inset */
+  margin-right: 14px;
+}
+
+.slider-ticks-container span {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
   font-size: 0.75rem;
   color: var(--text-muted);
-  margin-top: 0.25rem;
-}
-
-.slider-ticks span {
-  width: 20px;
+  font-weight: 500;
+  width: 30px;
   text-align: center;
 }
-
 .results-grid {
   display: grid;
   grid-template-columns: 1fr;
