@@ -1,0 +1,165 @@
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g. 1.0.5). Must match package.json on main. Leave empty to dry-run without publishing.'
+        required: false
+        type: string
+
+name: Release & Publish
+
+jobs:
+  release-please:
+    # Skip release-please entirely on manual dispatch — it is only needed for
+    # automated releases triggered by push.  When manually dispatched, the
+    # publish-npm job reads the version straight from package.json.
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      # pr is set whenever release-please opens or updates a release PR (but has
+      # not yet merged it). Exposing it lets downstream steps distinguish between
+      # "release created this run" and "release PR is pending".
+      pr: ${{ steps.release.outputs.pr }}
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          release-type: node
+
+      - name: Assert release-please acted on releasable commits
+        # Fail loudly when a fix:/feat: commit lands but release-please neither
+        # created/updated a release PR nor published a release tag. This catches
+        # the "silent skip" that occurs when the commit message cannot be parsed
+        # (e.g. the PR body was included in the squash commit).
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          commit_title=$(git log -1 --format='%s' "${{ github.sha }}")
+          if echo "$commit_title" | grep -qE '^(feat|fix)(\([^)]*\))?!?:' && \
+             [[ "${{ steps.release.outputs.release_created }}" != "true" ]] && \
+             [[ -z "${{ steps.release.outputs.pr }}" ]]; then
+            echo "ERROR: Commit '$commit_title' looks releasable but release-please neither created a release nor opened/updated a release PR." >&2
+            echo "This usually means the commit message could not be parsed. Check that squash_merge_commit_message=BLANK is set on the repository." >&2
+            exit 1
+          fi
+
+  publish-npm:
+    # On push: run only when release-please created a release tag.
+    # On workflow_dispatch: run directly (release-please job is skipped).
+    needs: [release-please]
+    if: |
+      always() && (
+        (github.event_name == 'push' && needs.release-please.outputs.release_created == 'true') ||
+        (github.event_name == 'workflow_dispatch' && inputs.version != '')
+      )
+    runs-on: ubuntu-latest
+    environment: npm-production
+    permissions:
+      contents: read
+      id-token: write # required for NPM provenance
+    outputs:
+      published_version: ${{ steps.get-version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify version matches package.json (manual dispatch only)
+        if: github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          pkg_version=$(node -p "require('./package.json').version")
+          input_version="${{ inputs.version }}"
+          if [[ "$pkg_version" != "$input_version" ]]; then
+            echo "ERROR: Input version '$input_version' does not match package.json version '$pkg_version'." >&2
+            echo "Update package.json on main to '$input_version' before dispatching, or correct the version input." >&2
+            exit 1
+          fi
+          echo "Version confirmed: $pkg_version"
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: latest
+          
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+          
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        
+      - name: Validate & Build Project
+        run: pnpm run check && pnpm run test && pnpm run build
+
+      - name: Get package version
+        id: get-version
+        run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+        
+      - name: Publish to npm
+        run: pnpm publish --ignore-scripts --no-git-checks --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  smoke-test:
+    name: Post-publish smoke test (npx)
+    needs: publish-npm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Wait for package to be available on registry
+        # npm can take a few seconds to make a newly-published version resolvable.
+        # We poll with a short sleep between attempts rather than a fixed delay.
+        shell: bash
+        run: |
+          version="${{ needs.publish-npm.outputs.published_version }}"
+          echo "Waiting for @the-hcma/fpdf@${version} on npm..."
+          for i in $(seq 1 12); do
+            if npm view "@the-hcma/fpdf@${version}" version &>/dev/null; then
+              echo "Package available."
+              exit 0
+            fi
+            echo "Attempt $i: not yet available, retrying in 10s..."
+            sleep 10
+          done
+          echo "Package did not become available in time." >&2
+          exit 1
+
+      - name: npx --help smoke test
+        shell: bash
+        run: |
+          output=$(npx --yes @the-hcma/fpdf --help 2>&1)
+          echo "$output"
+          if [[ -z "$output" ]]; then
+            echo "ERROR: --help produced no output" >&2
+            exit 1
+          fi
+          if ! echo "$output" | grep -q "Usage:"; then
+            echo "ERROR: --help output does not contain 'Usage:'" >&2
+            exit 1
+          fi
+
+      - name: npx --version smoke test
+        shell: bash
+        run: |
+          version="${{ needs.publish-npm.outputs.published_version }}"
+          output=$(npx --yes @the-hcma/fpdf@"${version}" --version 2>&1)
+          echo "$output"
+          # Require output to be exactly "<version>" or "<version> (<hash>)" — nothing else.
+          if ! echo "$output" | grep -qE "^${version}( \([0-9a-f]+\))?$"; then
+            echo "ERROR: --version output '${output}' does not match expected pattern '${version} [(<hash>)]'" >&2
+            exit 1
+          fi
