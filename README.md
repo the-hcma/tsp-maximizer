@@ -2,6 +2,8 @@
 
 A lightweight, highly accurate React/TypeScript web utility designed to optimize Thrift Savings Plan (TSP) contribution rates for federal employees (BRS/FERS).
 
+![TSP Maximizer — light mode](docs/tsp-maximizer.png)
+
 Federal payroll systems strictly calculate agency matching on a per-pay-period basis. If you contribute too much early in the year and hit the annual IRS limit, your contributions will be abruptly cut off—meaning you lose out on the free 4% agency match for the remaining pay periods. 
 
 This tool dynamically simulates the exact mathematical mechanics of federal payroll processors (like DFAS and NFC) to help you choose the precise contribution percentage needed to safely max out your IRS limit without leaving any matching money on the table.
@@ -10,7 +12,7 @@ This tool dynamically simulates the exact mathematical mechanics of federal payr
 - **Real-Time Strategy Comparison:** Compare your current contribution trajectory against the mathematically "Optimal" strategy and the "Capture the Max Match" (minimum impact) strategy side-by-side.
 - **Fractional Pay Period Simulation:** Accurately models the exact edge cases of federal payroll, such as hitting the IRS limit mid-pay-period and evaluating if the fractional spillover is large enough to trigger the 5% matching threshold.
 - **Dynamic Lost Match Alerts:** Explicitly calculates and warns you exactly how many dollars of agency matching you are leaving on the table if you undercontribute or overcontribute.
-- **Premium Interface:** Built with a fully responsive, glassmorphic dark-mode UI.
+- **Premium Interface:** Built with a fully responsive, glassmorphic UI with dark and light mode support.
 
 ## Getting Started
 
