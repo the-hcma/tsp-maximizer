@@ -158,11 +158,37 @@
   margin-bottom: 0.5rem;
 }
 
-.slider-value {
-  width: 160px;
+.input-group .slider-value-input {
+  width: 3ch;
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  font-size: 1.25rem;
+  font-weight: 600;
   text-align: right;
+  padding: 0;
+  border-radius: 0;
+  outline: none;
+  box-shadow: none;
   font-variant-numeric: tabular-nums;
-  font-family: monospace;
+  border-bottom: 2px solid transparent;
+  transition: border-bottom-color 0.2s;
+}
+
+.input-group .slider-value-input:focus {
+  border: none;
+  border-bottom: 2px solid var(--primary-color);
+  box-shadow: none;
+}
+
+.input-group .slider-value-input::-webkit-outer-spin-button,
+.input-group .slider-value-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input-group .slider-value-input[type=number] {
+  -moz-appearance: textfield;
 }
 
 /* --- CUSTOM SLIDER UI --- */

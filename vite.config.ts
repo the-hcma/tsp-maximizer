@@ -7,5 +7,8 @@ export default defineConfig({
   server: {
     port: 0,
     strictPort: false
-  }
+  },
+  test: {
+    environment: 'node',
+  },
 })
