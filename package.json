@@ -1,6 +1,5 @@
 {
-  "name": "tsp-maximizer",
-  "private": true,
+  "name": "@the-hcma/tsp-maximizer",
   "version": "1.0.0",
   "type": "module",
   "scripts": {

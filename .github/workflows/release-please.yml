@@ -107,12 +107,19 @@ jobs:
         run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
         
       - name: Publish to npm
+        # NODE_AUTH_TOKEN is intentionally absent — npm CLI detects the GitHub
+        # OIDC token (id-token: write above) and exchanges it automatically.
+        # Configure this repo as a trusted publisher on npmjs.com first:
+        # npmjs.com → @the-hcma/tsp-maximizer → Settings → Trusted Publishing
+        #   Provider: GitHub Actions
+        #   Owner:    the-hcma
+        #   Repo:     tsp-maximizer
+        #   Workflow: release-please.yml
+        #   Env:      npm-production
         run: pnpm publish --ignore-scripts --no-git-checks --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   smoke-test:
-    name: Post-publish smoke test (npx)
+    name: Post-publish smoke test
     needs: publish-npm
     runs-on: ubuntu-latest
     steps:
@@ -126,9 +133,9 @@ jobs:
         shell: bash
         run: |
           version="${{ needs.publish-npm.outputs.published_version }}"
-          echo "Waiting for @the-hcma/fpdf@${version} on npm..."
+          echo "Waiting for @the-hcma/tsp-maximizer@${version} on npm..."
           for i in $(seq 1 12); do
-            if npm view "@the-hcma/fpdf@${version}" version &>/dev/null; then
+            if npm view "@the-hcma/tsp-maximizer@${version}" version &>/dev/null; then
               echo "Package available."
               exit 0
             fi
@@ -138,28 +145,13 @@ jobs:
           echo "Package did not become available in time." >&2
           exit 1
 
-      - name: npx --help smoke test
-        shell: bash
-        run: |
-          output=$(npx --yes @the-hcma/fpdf --help 2>&1)
-          echo "$output"
-          if [[ -z "$output" ]]; then
-            echo "ERROR: --help produced no output" >&2
-            exit 1
-          fi
-          if ! echo "$output" | grep -q "Usage:"; then
-            echo "ERROR: --help output does not contain 'Usage:'" >&2
-            exit 1
-          fi
-
-      - name: npx --version smoke test
+      - name: Verify published package metadata
         shell: bash
         run: |
           version="${{ needs.publish-npm.outputs.published_version }}"
-          output=$(npx --yes @the-hcma/fpdf@"${version}" --version 2>&1)
-          echo "$output"
-          # Require output to be exactly "<version>" or "<version> (<hash>)" — nothing else.
-          if ! echo "$output" | grep -qE "^${version}( \([0-9a-f]+\))?$"; then
-            echo "ERROR: --version output '${output}' does not match expected pattern '${version} [(<hash>)]'" >&2
+          published=$(npm view "@the-hcma/tsp-maximizer@${version}" version)
+          if [[ "$published" != "$version" ]]; then
+            echo "ERROR: expected version '$version' but npm returned '$published'" >&2
             exit 1
           fi
+          echo "Confirmed @the-hcma/tsp-maximizer@${version} is live on npm."
