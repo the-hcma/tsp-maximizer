@@ -24,6 +24,9 @@ const openBrowserPlugin: Plugin = {
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), openBrowserPlugin],
+  define: {
+    __APP_VERSION__: JSON.stringify(process.env['npm_package_version']),
+  },
   server: {
     port: 0,
     strictPort: false,

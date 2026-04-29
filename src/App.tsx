@@ -16,7 +16,7 @@ const DEFAULTS = {
 
 const getSliderOffset = (percent: number) => `calc(14px + (100% - 28px) * ${percent / 100})`;
 
-const APP_VERSION = '1.1.0';
+declare const __APP_VERSION__: string;
 
 const fmtMoney = (n: number): string =>
   n.toLocaleString('en-US', {
@@ -201,8 +201,16 @@ function App() {
           {isDark ? '☀️' : '🌙'}
         </button>
         <h1>
-          TSP Maximizer <span className="version-badge">v{APP_VERSION}</span>
+          TSP Maximizer <span className="version-badge">v{__APP_VERSION__}</span>
         </h1>
+        <a
+          href="https://github.com/the-hcma/tsp-maximizer#readme"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="footer-link"
+        >
+          Documentation &amp; Help
+        </a>
         <p>
           Optimize your Thrift Savings Plan to hit the max limit precisely while capturing every
           dollar of agency match.{' '}

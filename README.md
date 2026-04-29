@@ -28,7 +28,15 @@ This tool dynamically simulates the exact mathematical mechanics of federal payr
 
 ## Running It
 
-### Install once, run anywhere (recommended)
+### No-install (run directly with npx)
+
+If you prefer not to install anything globally, you can run it on demand:
+
+```bash
+npx @the-hcma/tsp-maximizer
+```
+
+### Install once, run anywhere
 
 ```bash
 npm install -g @the-hcma/tsp-maximizer
@@ -41,14 +49,6 @@ To access it from another device on your network (e.g. your phone, or a remote/h
 
 ```bash
 tsp-maximizer --host
-```
-
-### No-install (run directly with npx)
-
-If you prefer not to install anything globally, you can run it on demand:
-
-```bash
-npx @the-hcma/tsp-maximizer
 ```
 
 Both options require Node.js 18+. Don't have it? Install it for your platform:
