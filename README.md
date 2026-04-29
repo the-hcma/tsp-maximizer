@@ -28,20 +28,45 @@ This tool dynamically simulates the exact mathematical mechanics of federal payr
 
 ## Running It
 
-No installation required — just run:
+### Install once, run anywhere (recommended)
+
+```bash
+npm install -g @the-hcma/tsp-maximizer
+tsp-maximizer
+```
+
+This installs the `tsp-maximizer` command globally so you can launch the app from any terminal, any time — no project folder needed. The browser opens automatically.
+
+To access it from another device on your network (e.g. your phone, or a remote/headless machine):
+
+```bash
+tsp-maximizer --host
+```
+
+### No-install (run directly with npx)
+
+If you prefer not to install anything globally, you can run it on demand:
 
 ```bash
 npx @the-hcma/tsp-maximizer
 ```
 
-This opens the app automatically in your browser. Requires Node.js 18+.
+Both options require Node.js 18+. Don't have it? Install it for your platform:
 
-> **Don't have Node.js?** Download it from [nodejs.org](https://nodejs.org) (choose the LTS version).
-
-To access it from another device on your network (e.g. your phone, or a remote machine):
-
+**macOS**
 ```bash
-npx @the-hcma/tsp-maximizer --host
+# Install Homebrew (https://brew.sh) then:
+brew install node
+```
+
+**Windows**
+
+Download the LTS installer from [nodejs.org](https://nodejs.org).
+
+**Linux (Ubuntu/Debian)**
+```bash
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+sudo apt-get install -y nodejs
 ```
 
 ## Features
@@ -56,25 +81,11 @@ This section is for contributors who want to run or modify the source code local
 
 ### Prerequisites
 
-Install Node.js (v18+) and the `pnpm` package manager.
+Install Node.js 18+ (see [Running It](#running-it) above for platform instructions), then enable `pnpm`:
 
-**macOS**
-1. Install [Homebrew](https://brew.sh/): `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
-2. Install Node.js: `brew install node`
-3. Enable pnpm: `corepack enable pnpm`
-
-**Windows**
-1. Install [nvm-windows](https://github.com/coreybutler/nvm-windows/releases) (Node Version Manager).
-2. Open PowerShell and install the latest Node: `nvm install lts` and then `nvm use lts`
-3. Enable pnpm: `corepack enable pnpm`
-
-**Linux (Ubuntu/Debian)**
-1. Install Node.js via NodeSource:
-   ```bash
-   curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-   sudo apt-get install -y nodejs
-   ```
-2. Enable pnpm: `corepack enable pnpm`
+```bash
+corepack enable pnpm
+```
 
 ### Setup
 
