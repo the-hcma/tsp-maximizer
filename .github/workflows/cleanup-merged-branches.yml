@@ -42,6 +42,23 @@ jobs:
         for BRANCH in $BRANCHES; do
           echo "Checking branch: ${BRANCH}..."
 
+          # Delete Graphite internal base-tracking branches if the associated PR is merged
+          if [[ "$BRANCH" == graphite-base/* ]]; then
+            pr_num="${BRANCH#graphite-base/}"
+            pr_merged=$(gh api "repos/${{ github.repository }}/pulls/${pr_num}" --jq '.merged' 2>/dev/null || echo "false")
+            if [ "$pr_merged" = "true" ]; then
+              echo "  Graphite base branch for merged PR #${pr_num}, deleting..."
+              gh api "repos/${{ github.repository }}/git/refs/heads/${BRANCH}" -X DELETE 2>/dev/null && \
+                echo "  ✅ Deleted ${BRANCH}" && \
+                DELETED=$((DELETED + 1)) || \
+                echo "  ⚠️ Failed to delete ${BRANCH}"
+            else
+              echo "  Graphite base branch for open/unmerged PR #${pr_num}, keeping"
+              KEPT=$((KEPT + 1))
+            fi
+            continue
+          fi
+
           # Search for closed PRs that used this branch as head
           PR_NUMBER=$(gh api "repos/${{ github.repository }}/pulls?state=closed&head=${{ github.repository_owner }}:${BRANCH}" --jq '.[0].number' 2>/dev/null || echo "")
 
