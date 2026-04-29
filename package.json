@@ -34,6 +34,7 @@
   ],
   "scripts": {
     "dev": "vite",
+    "predev": "pnpm install",
     "build": "tsc -b && vite build",
     "test": "vitest run",
     "check": "tsc -b && eslint .",
