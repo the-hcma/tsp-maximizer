@@ -61,8 +61,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Type check + lint + format
+      - name: Type check + lint
         run: pnpm run check
+
+      - name: Format check
+        run: pnpm run format:check
 
       - name: Unit tests
         run: pnpm test

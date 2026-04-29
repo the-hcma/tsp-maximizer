@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import "./App.css";
-import { projectStrategy, computeOptimalRate } from "./computations";
+import { useState, useEffect } from 'react';
+import './App.css';
+import { projectStrategy, computeOptimalRate } from './computations';
 
 const DEFAULTS = {
   basePay: 6177.3,
@@ -14,60 +14,50 @@ const DEFAULTS = {
   totalPayPeriods: 12,
 };
 
-const getSliderOffset = (percent: number) =>
-  `calc(14px + (100% - 28px) * ${percent / 100})`;
+const getSliderOffset = (percent: number) => `calc(14px + (100% - 28px) * ${percent / 100})`;
 
-const APP_VERSION = "1.1.0";
+const APP_VERSION = '1.1.0';
 
 const fmtMoney = (n: number): string =>
-  n.toLocaleString("en-US", {
+  n.toLocaleString('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
 
 const parseMoney = (s: string): number => {
-  const n = Number(s.replace(/,/g, ""));
+  const n = Number(s.replace(/,/g, ''));
   return !isNaN(n) && n >= 0 ? n : 0;
 };
 
 function App() {
   const [isDark, setIsDark] = useState<boolean>(() => {
-    const stored = localStorage.getItem("theme");
+    const stored = localStorage.getItem('theme');
     const dark = stored
-      ? stored === "dark"
-      : window.matchMedia("(prefers-color-scheme: dark)").matches;
-    document.documentElement.setAttribute(
-      "data-theme",
-      dark ? "dark" : "light",
-    );
+      ? stored === 'dark'
+      : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
     return dark;
   });
 
   useEffect(() => {
-    document.documentElement.setAttribute(
-      "data-theme",
-      isDark ? "dark" : "light",
-    );
-    localStorage.setItem("theme", isDark ? "dark" : "light");
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
   }, [isDark]);
 
-  const [basePayInput, setBasePayInput] = useState<string>(
-    fmtMoney(DEFAULTS.basePay),
-  );
+  const [basePayInput, setBasePayInput] = useState<string>(fmtMoney(DEFAULTS.basePay));
   const [contributedSoFarInput, setContributedSoFarInput] = useState<string>(
     fmtMoney(DEFAULTS.contributedSoFar),
   );
-  const [currentRateStr, setCurrentRateStr] = useState<string>(
-    DEFAULTS.currentRate.toString(),
-  );
+  const [currentRateStr, setCurrentRateStr] = useState<string>(DEFAULTS.currentRate.toString());
   const [agencyAutoSoFarInput, setAgencyAutoSoFarInput] = useState<string>(
     fmtMoney(DEFAULTS.agencyAutoSoFar),
   );
   const [agencyMatchSoFarInput, setAgencyMatchSoFarInput] = useState<string>(
     fmtMoney(DEFAULTS.agencyMatchSoFar),
   );
-  const [maxAnnualContributionInput, setMaxAnnualContributionInput] =
-    useState<string>(fmtMoney(DEFAULTS.maxAnnualContribution));
+  const [maxAnnualContributionInput, setMaxAnnualContributionInput] = useState<string>(
+    fmtMoney(DEFAULTS.maxAnnualContribution),
+  );
 
   const basePay = parseMoney(basePayInput);
   const contributedSoFar = parseMoney(contributedSoFarInput);
@@ -76,9 +66,7 @@ function App() {
   const maxAnnualContribution = parseMoney(maxAnnualContributionInput);
   const autoContributionPercent = DEFAULTS.autoContributionPercent;
   const maxMatchPercent = DEFAULTS.maxMatchPercent;
-  const [totalPayPeriods, setTotalPayPeriods] = useState<number>(
-    DEFAULTS.totalPayPeriods,
-  );
+  const [totalPayPeriods, setTotalPayPeriods] = useState<number>(DEFAULTS.totalPayPeriods);
   const [currentPeriod, setCurrentPeriod] = useState<number>(() => {
     const today = new Date();
     const currentMonth = today.getMonth();
@@ -103,24 +91,21 @@ function App() {
   };
 
   const handleClearYtdInputs = () => {
-    setBasePayInput("0.00");
-    setContributedSoFarInput("0.00");
-    setCurrentRateStr("0");
-    setAgencyAutoSoFarInput("0.00");
-    setAgencyMatchSoFarInput("0.00");
+    setBasePayInput('0.00');
+    setContributedSoFarInput('0.00');
+    setCurrentRateStr('0');
+    setAgencyAutoSoFarInput('0.00');
+    setAgencyMatchSoFarInput('0.00');
   };
 
   const handleMoneyFocus = (
     setter: React.Dispatch<React.SetStateAction<string>>,
     value: string,
   ) => {
-    setter(value.replace(/,/g, ""));
+    setter(value.replace(/,/g, ''));
   };
 
-  const handleMoneyBlur = (
-    setter: React.Dispatch<React.SetStateAction<string>>,
-    value: string,
-  ) => {
+  const handleMoneyBlur = (setter: React.Dispatch<React.SetStateAction<string>>, value: string) => {
     setter(fmtMoney(parseMoney(value)));
   };
 
@@ -147,8 +132,7 @@ function App() {
     lostMatchAmount,
   } = projectStrategy({ ...sharedParams, ratePercent: currentRate });
 
-  const totalCurrentValue =
-    totalCurrentContribution + totalCurrentMatch + totalAuto;
+  const totalCurrentValue = totalCurrentContribution + totalCurrentMatch + totalAuto;
 
   // --- OPTIMAL PROJECTIONS ---
   const optimalContributionRate = computeOptimalRate({
@@ -168,8 +152,7 @@ function App() {
     ratePercent: optimalContributionRate,
   });
 
-  const totalOptimalValue =
-    totalOptimalContribution + totalOptimalMatch + totalOptimalAuto;
+  const totalOptimalValue = totalOptimalContribution + totalOptimalMatch + totalOptimalAuto;
   const willLoseMatch = optStrategyLostMatch > 0;
 
   // --- CAPTURE MAX MATCH STRATEGY (5%) ---
@@ -195,7 +178,7 @@ function App() {
   }
 
   let currentStrategyWarning = null;
-  let currentStrategyWarningIcon = "⚠️";
+  let currentStrategyWarningIcon = '⚠️';
   if (lostMatchAmount > 0) {
     if (currentRate < 5) {
       currentStrategyWarning = `Your rate is below 5%. You are leaving $${fmtMoney(lostMatchAmount)} in free agency matching on the table over the remaining ${remainingPayPeriods} pay period(s)!`;
@@ -204,7 +187,7 @@ function App() {
     }
   } else if (totalCurrentContribution < maxAnnualContribution - 0.01) {
     currentStrategyWarning = `You are projected to contribute $${fmtMoney(totalCurrentContribution)} by the end of the year. You are leaving $${fmtMoney(maxAnnualContribution - totalCurrentContribution)} of tax-advantaged space unused!`;
-    currentStrategyWarningIcon = "💡";
+    currentStrategyWarningIcon = '💡';
   }
 
   return (
@@ -213,27 +196,23 @@ function App() {
         <button
           className="theme-toggle"
           onClick={() => setIsDark((d) => !d)}
-          aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+          aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
         >
-          {isDark ? "☀️" : "🌙"}
+          {isDark ? '☀️' : '🌙'}
         </button>
         <h1>
           TSP Maximizer <span className="version-badge">v{APP_VERSION}</span>
         </h1>
         <p>
-          Optimize your Thrift Savings Plan to hit the max limit precisely while
-          capturing every dollar of agency match.{" "}
-          <span
-            className="tooltip-wrapper tooltip-wrapper--hero"
-            aria-label="Disclaimer"
-          >
+          Optimize your Thrift Savings Plan to hit the max limit precisely while capturing every
+          dollar of agency match.{' '}
+          <span className="tooltip-wrapper tooltip-wrapper--hero" aria-label="Disclaimer">
             <span className="tooltip-icon">ⓘ</span>
             <span className="tooltip-content">
-              <strong>Not financial advice.</strong> This tool is for
-              informational purposes only and does not constitute financial,
-              tax, or investment advice. Calculations are based on publicly
-              available payroll rules and may not reflect your specific
-              situation. Use at your own risk.
+              <strong>Not financial advice.</strong> This tool is for informational purposes only
+              and does not constitute financial, tax, or investment advice. Calculations are based
+              on publicly available payroll rules and may not reflect your specific situation. Use
+              at your own risk.
             </span>
           </span>
         </p>
@@ -257,12 +236,8 @@ function App() {
                 type="text"
                 inputMode="decimal"
                 value={basePayInput}
-                onChange={(e) =>
-                  setBasePayInput(e.target.value.replace(/,/g, ""))
-                }
-                onFocus={(e) =>
-                  handleMoneyFocus(setBasePayInput, e.target.value)
-                }
+                onChange={(e) => setBasePayInput(e.target.value.replace(/,/g, ''))}
+                onFocus={(e) => handleMoneyFocus(setBasePayInput, e.target.value)}
                 onBlur={(e) => handleMoneyBlur(setBasePayInput, e.target.value)}
               />
             </div>
@@ -272,53 +247,41 @@ function App() {
                 type="text"
                 inputMode="decimal"
                 value={contributedSoFarInput}
-                onChange={(e) =>
-                  setContributedSoFarInput(e.target.value.replace(/,/g, ""))
-                }
-                onFocus={(e) =>
-                  handleMoneyFocus(setContributedSoFarInput, e.target.value)
-                }
-                onBlur={(e) =>
-                  handleMoneyBlur(setContributedSoFarInput, e.target.value)
-                }
+                onChange={(e) => setContributedSoFarInput(e.target.value.replace(/,/g, ''))}
+                onFocus={(e) => handleMoneyFocus(setContributedSoFarInput, e.target.value)}
+                onBlur={(e) => handleMoneyBlur(setContributedSoFarInput, e.target.value)}
               />
             </div>
-            <div
-              className="input-group slider-group"
-              style={{ marginBottom: "1rem" }}
-            >
-              <div
-                className="slider-label"
-                style={{ marginBottom: "1rem", alignItems: "center" }}
-              >
+            <div className="input-group slider-group" style={{ marginBottom: '1rem' }}>
+              <div className="slider-label" style={{ marginBottom: '1rem', alignItems: 'center' }}>
                 <span>Contribution Rate</span>
-                <div style={{ display: "flex", alignItems: "center" }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                   <input
                     type="text"
                     className="slider-value-input"
                     value={currentRateStr}
                     onChange={(e) => {
-                      const val = e.target.value.replace(/[^0-9]/g, "");
-                      if (val === "") {
-                        setCurrentRateStr("");
+                      const val = e.target.value.replace(/[^0-9]/g, '');
+                      if (val === '') {
+                        setCurrentRateStr('');
                         return;
                       }
                       const num = parseInt(val, 10);
-                      if (num > 100) setCurrentRateStr("100");
+                      if (num > 100) setCurrentRateStr('100');
                       else setCurrentRateStr(val);
                     }}
                     onBlur={() => {
                       const num = parseInt(currentRateStr, 10);
-                      if (isNaN(num) || num < 0) setCurrentRateStr("0");
-                      else if (num > 100) setCurrentRateStr("100");
+                      if (isNaN(num) || num < 0) setCurrentRateStr('0');
+                      else if (num > 100) setCurrentRateStr('100');
                       else setCurrentRateStr(num.toString());
                     }}
                   />
                   <span
                     style={{
-                      fontSize: "1.25rem",
+                      fontSize: '1.25rem',
                       fontWeight: 600,
-                      color: "var(--text-color)",
+                      color: 'var(--text-color)',
                     }}
                   >
                     %
@@ -326,10 +289,7 @@ function App() {
                 </div>
               </div>
 
-              <div
-                className="slider-container"
-                style={{ position: "relative", width: "100%" }}
-              >
+              <div className="slider-container" style={{ position: 'relative', width: '100%' }}>
                 <div className="slider-track-wrapper">
                   <div
                     className="slider-track-fill"
@@ -338,7 +298,7 @@ function App() {
                   {[0, 25, 50, 75, 100].map((val) => (
                     <div
                       key={val}
-                      className={`slider-node ${currentRate >= val ? "active" : ""}`}
+                      className={`slider-node ${currentRate >= val ? 'active' : ''}`}
                       style={{ left: getSliderOffset(val) }}
                     ></div>
                   ))}
@@ -368,15 +328,9 @@ function App() {
                 type="text"
                 inputMode="decimal"
                 value={agencyAutoSoFarInput}
-                onChange={(e) =>
-                  setAgencyAutoSoFarInput(e.target.value.replace(/,/g, ""))
-                }
-                onFocus={(e) =>
-                  handleMoneyFocus(setAgencyAutoSoFarInput, e.target.value)
-                }
-                onBlur={(e) =>
-                  handleMoneyBlur(setAgencyAutoSoFarInput, e.target.value)
-                }
+                onChange={(e) => setAgencyAutoSoFarInput(e.target.value.replace(/,/g, ''))}
+                onFocus={(e) => handleMoneyFocus(setAgencyAutoSoFarInput, e.target.value)}
+                onBlur={(e) => handleMoneyBlur(setAgencyAutoSoFarInput, e.target.value)}
               />
             </div>
             <div className="input-group">
@@ -385,15 +339,9 @@ function App() {
                 type="text"
                 inputMode="decimal"
                 value={agencyMatchSoFarInput}
-                onChange={(e) =>
-                  setAgencyMatchSoFarInput(e.target.value.replace(/,/g, ""))
-                }
-                onFocus={(e) =>
-                  handleMoneyFocus(setAgencyMatchSoFarInput, e.target.value)
-                }
-                onBlur={(e) =>
-                  handleMoneyBlur(setAgencyMatchSoFarInput, e.target.value)
-                }
+                onChange={(e) => setAgencyMatchSoFarInput(e.target.value.replace(/,/g, ''))}
+                onFocus={(e) => handleMoneyFocus(setAgencyMatchSoFarInput, e.target.value)}
+                onBlur={(e) => handleMoneyBlur(setAgencyMatchSoFarInput, e.target.value)}
               />
             </div>
             <div className="input-group">
@@ -402,20 +350,9 @@ function App() {
                 type="text"
                 inputMode="decimal"
                 value={maxAnnualContributionInput}
-                onChange={(e) =>
-                  setMaxAnnualContributionInput(
-                    e.target.value.replace(/,/g, ""),
-                  )
-                }
-                onFocus={(e) =>
-                  handleMoneyFocus(
-                    setMaxAnnualContributionInput,
-                    e.target.value,
-                  )
-                }
-                onBlur={(e) =>
-                  handleMoneyBlur(setMaxAnnualContributionInput, e.target.value)
-                }
+                onChange={(e) => setMaxAnnualContributionInput(e.target.value.replace(/,/g, ''))}
+                onFocus={(e) => handleMoneyFocus(setMaxAnnualContributionInput, e.target.value)}
+                onBlur={(e) => handleMoneyBlur(setMaxAnnualContributionInput, e.target.value)}
               />
             </div>
             <div className="input-group">
@@ -424,31 +361,26 @@ function App() {
                 type="number"
                 min="0"
                 value={totalPayPeriods}
-                onChange={(e) =>
-                  setTotalPayPeriods(Math.max(0, Number(e.target.value)))
-                }
+                onChange={(e) => setTotalPayPeriods(Math.max(0, Number(e.target.value)))}
               />
             </div>
-            <div
-              className="input-group slider-group"
-              style={{ marginBottom: "1rem" }}
-            >
-              <div className="slider-label" style={{ marginBottom: "1rem" }}>
+            <div className="input-group slider-group" style={{ marginBottom: '1rem' }}>
+              <div className="slider-label" style={{ marginBottom: '1rem' }}>
                 <span>Current Pay Period</span>
                 <span
                   className="slider-value"
                   style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    gap: "0.2rem",
-                    width: "250px",
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    gap: '0.2rem',
+                    width: '250px',
                   }}
                 >
                   <span
                     style={{
-                      display: "inline-block",
-                      width: "3ch",
-                      textAlign: "right",
+                      display: 'inline-block',
+                      width: '3ch',
+                      textAlign: 'right',
                     }}
                   >
                     {currentPeriod}
@@ -456,19 +388,19 @@ function App() {
                   <span>of</span>
                   <span
                     style={{
-                      display: "inline-block",
-                      width: "3ch",
-                      textAlign: "right",
+                      display: 'inline-block',
+                      width: '3ch',
+                      textAlign: 'right',
                     }}
                   >
                     {totalPayPeriods}
                   </span>
-                  <span style={{ marginLeft: "0.2rem" }}>(Remaining:</span>
+                  <span style={{ marginLeft: '0.2rem' }}>(Remaining:</span>
                   <span
                     style={{
-                      display: "inline-block",
-                      width: "3ch",
-                      textAlign: "right",
+                      display: 'inline-block',
+                      width: '3ch',
+                      textAlign: 'right',
                     }}
                   >
                     {remainingPayPeriods}
@@ -476,18 +408,13 @@ function App() {
                   <span>)</span>
                 </span>
               </div>
-              <div
-                className="slider-container"
-                style={{ position: "relative", width: "100%" }}
-              >
+              <div className="slider-container" style={{ position: 'relative', width: '100%' }}>
                 <div className="slider-track-wrapper">
                   <div
                     className="slider-track-fill"
                     style={{
                       width: getSliderOffset(
-                        currentPeriod > 0
-                          ? (currentPeriod / totalPayPeriods) * 100
-                          : 0,
+                        currentPeriod > 0 ? (currentPeriod / totalPayPeriods) * 100 : 0,
                       ),
                     }}
                   ></div>
@@ -496,7 +423,7 @@ function App() {
                     return (
                       <div
                         key={i}
-                        className={`slider-node ${currentPeriod >= i ? "active" : ""}`}
+                        className={`slider-node ${currentPeriod >= i ? 'active' : ''}`}
                         style={{ left: getSliderOffset(percent) }}
                       ></div>
                     );
@@ -537,17 +464,13 @@ function App() {
                 <span className="stat-sub tooltip-wrapper">
                   What does this mean?
                   <span className="tooltip-icon">ⓘ</span>
-                  <div className="tooltip-content">
-                    {currentStrategyTooltip}
-                  </div>
+                  <div className="tooltip-content">{currentStrategyTooltip}</div>
                 </span>
               </div>
 
               <div className="stat-box">
                 <span className="stat-label">Projected End-of-Year Value</span>
-                <span className="stat-value">
-                  ${fmtMoney(totalCurrentValue)}
-                </span>
+                <span className="stat-value">${fmtMoney(totalCurrentValue)}</span>
                 <div className="breakdown">
                   <div className="breakdown-item">
                     <span>Your Contribution:</span>
@@ -565,12 +488,10 @@ function App() {
               </div>
             </div>
 
-            <div style={{ minHeight: "90px", marginTop: "1.5rem" }}>
+            <div style={{ minHeight: '90px', marginTop: '1.5rem' }}>
               {currentStrategyWarning && (
                 <div className="alert-warning" style={{ marginTop: 0 }}>
-                  <span className="alert-icon">
-                    {currentStrategyWarningIcon}
-                  </span>
+                  <span className="alert-icon">{currentStrategyWarningIcon}</span>
                   {currentStrategyWarning}
                 </div>
               )}
@@ -583,16 +504,12 @@ function App() {
               <div className="stat-box highlight">
                 <span className="stat-label">Optimal Contribution Rate</span>
                 <span className="stat-value">{optimalContributionRate}%</span>
-                <span className="stat-sub">
-                  Integer rate to safely max out IRS limit
-                </span>
+                <span className="stat-sub">Integer rate to safely max out IRS limit</span>
               </div>
 
               <div className="stat-box">
                 <span className="stat-label">Projected End-of-Year Value</span>
-                <span className="stat-value">
-                  ${fmtMoney(totalOptimalValue)}
-                </span>
+                <span className="stat-value">${fmtMoney(totalOptimalValue)}</span>
                 <div className="breakdown">
                   <div className="breakdown-item">
                     <span>Your Contribution:</span>
@@ -610,13 +527,12 @@ function App() {
               </div>
             </div>
 
-            <div style={{ minHeight: "90px", marginTop: "1.5rem" }}>
+            <div style={{ minHeight: '90px', marginTop: '1.5rem' }}>
               {willLoseMatch && (
                 <div className="alert-warning" style={{ marginTop: 0 }}>
                   <span className="alert-icon">⚠️</span>
-                  This integer optimal rate causes you to leave $
-                  {fmtMoney(optStrategyLostMatch)} in free agency matching on
-                  the table!
+                  This integer optimal rate causes you to leave ${fmtMoney(optStrategyLostMatch)} in
+                  free agency matching on the table!
                 </div>
               )}
             </div>
@@ -629,17 +545,15 @@ function App() {
                 className="stat-box highlight-tertiary"
                 style={{
                   background:
-                    "linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.05))",
-                  borderColor: "rgba(139, 92, 246, 0.3)",
+                    'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.05))',
+                  borderColor: 'rgba(139, 92, 246, 0.3)',
                 }}
               >
                 <span className="stat-label">Minimum Target Rate</span>
-                <span className="stat-value" style={{ color: "#8b5cf6" }}>
+                <span className="stat-value" style={{ color: '#8b5cf6' }}>
                   5%
                 </span>
-                <span className="stat-sub">
-                  Lowest rate to secure 100% of the agency match
-                </span>
+                <span className="stat-sub">Lowest rate to secure 100% of the agency match</span>
               </div>
 
               <div className="stat-box">
@@ -662,13 +576,12 @@ function App() {
               </div>
             </div>
 
-            <div style={{ minHeight: "90px", marginTop: "1.5rem" }}>
+            <div style={{ minHeight: '90px', marginTop: '1.5rem' }}>
               {totalMinContrib < maxAnnualContribution - 0.01 && (
                 <div className="alert-warning" style={{ marginTop: 0 }}>
                   <span className="alert-icon">💡</span>
-                  This strategy minimizes the hit to your paycheck while
-                  capturing all free matching money. However, you leave $
-                  {fmtMoney(maxAnnualContribution - totalMinContrib)} of
+                  This strategy minimizes the hit to your paycheck while capturing all free matching
+                  money. However, you leave ${fmtMoney(maxAnnualContribution - totalMinContrib)} of
                   tax-advantaged IRS space unused!
                 </div>
               )}
