@@ -10,6 +10,18 @@ A lightweight, highly accurate React/TypeScript web utility designed to optimize
 
 ![TSP Maximizer — light mode](docs/tsp-maximizer.png)
 
+> **⚠️ Disclaimer: Not Financial Advice**
+>
+> This tool is provided for informational and educational purposes only. It is **not** financial, tax, or investment advice. The calculations are based on publicly available payroll rules and may not reflect your specific situation, agency payroll system, or plan changes. Always consult your agency's HR/payroll office or a qualified financial advisor before making contribution changes.
+>
+> **Use this application at your own risk.** The authors assume no responsibility for any financial decisions made based on its output.
+>
+> **Learn more about the TSP and BRS/FERS programs:**
+> - [Thrift Savings Plan — Official Website](https://www.tsp.gov)
+> - [TSP Contribution Limits](https://www.tsp.gov/making-contributions/contribution-limits/)
+> - [Blended Retirement System (BRS) Overview](https://militarypay.defense.gov/BlendedRetirement/)
+> - [FERS Retirement Information — OPM](https://www.opm.gov/retirement-services/fers-information/)
+
 Federal payroll systems strictly calculate agency matching on a per-pay-period basis. If you contribute too much early in the year and hit the annual IRS limit, your contributions will be abruptly cut off—meaning you lose out on the free 4% agency match for the remaining pay periods. 
 
 This tool dynamically simulates the exact mathematical mechanics of federal payroll processors (like DFAS and NFC) to help you choose the precise contribution percentage needed to safely max out your IRS limit without leaving any matching money on the table.
