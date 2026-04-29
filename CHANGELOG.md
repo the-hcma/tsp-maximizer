@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/the-hcma/tsp-maximizer/compare/v1.3.0...v1.4.0) (2026-04-29)
+
+
+### Features
+
+* add OS-specific terminal instructions to README and use absolute path for agent script ([bbe9b57](https://github.com/the-hcma/tsp-maximizer/commit/bbe9b57c63a0bdc42fd3c6eb7420ad2c4c2cc97a))
+
 ## [1.3.0](https://github.com/the-hcma/tsp-maximizer/compare/v1.2.0...v1.3.0) (2026-04-29)
 
 
