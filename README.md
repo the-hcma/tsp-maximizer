@@ -40,20 +40,21 @@ Run directly from npm — no installation required:
 npx @the-hcma/tsp-maximizer
 ```
 
-This serves the app locally and opens it in your browser. Requires Node.js 18+.
+This serves the app locally and **opens it automatically in your browser**. Requires Node.js 18+.
 
-To expose the server on your local network (e.g. for mobile testing):
+To expose the server on your local network (e.g. for mobile testing or a headless server):
 
 ```bash
 npx @the-hcma/tsp-maximizer --host
 ```
 
-## Getting Started
+## Getting Started (Development)
 
-This repository is designed to be maintained within the `the-hcma` GitHub organization.
+This section is for contributors who want to run or modify the source code locally.
 
 ### Prerequisites
-To run this application, you will need to install Node.js (v18+) and the `pnpm` package manager. 
+
+Install Node.js (v18+) and the `pnpm` package manager.
 
 **macOS**
 1. Install [Homebrew](https://brew.sh/): `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
@@ -73,7 +74,7 @@ To run this application, you will need to install Node.js (v18+) and the `pnpm` 
    ```
 2. Enable pnpm: `corepack enable pnpm`
 
-### Installation
+### Setup
 
 1. Clone the repository:
    ```bash
@@ -86,22 +87,18 @@ To run this application, you will need to install Node.js (v18+) and the `pnpm` 
    pnpm install
    ```
 
-### Running Locally
+3. Start the development server — the app will open automatically in your browser:
+   ```bash
+   pnpm run dev
+   ```
 
-To start the Vite development server:
-```bash
-pnpm run dev
-```
-The application will bind to an available local port and output the URL in your terminal.
-
-To expose the server on your local network (useful for testing on other devices):
+To expose the dev server on your local network (useful for testing on other devices, or when running headlessly):
 ```bash
 pnpm run dev --host
 ```
 
 ### Building for Production
 
-To compile the TypeScript and generate a minified production bundle:
 ```bash
 pnpm run build
 ```
