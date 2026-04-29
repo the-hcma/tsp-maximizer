@@ -114,4 +114,4 @@ The compiled assets will be placed in the `dist/` directory, ready to be deploye
 - **Package Manager:** `pnpm`
 
 ## License
-MIT License
+MIT License — Copyright © 2026 Henrique Andrade
