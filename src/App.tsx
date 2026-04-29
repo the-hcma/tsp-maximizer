@@ -67,15 +67,12 @@ function App() {
     setCurrentPeriod(today.getMonth() + (today.getDate() > 15 ? 1 : 0));
   };
 
-  const handleClearAll = () => {
+  const handleClearYtdInputs = () => {
     setBasePayInput('0.00');
     setContributedSoFarInput('0.00');
     setCurrentRateStr('0');
     setAgencyAutoSoFarInput('0.00');
     setAgencyMatchSoFarInput('0.00');
-    setMaxAnnualContributionInput('0.00');
-    setTotalPayPeriods(0);
-    setCurrentPeriod(0);
   };
 
   const handleMoneyBlur = (setter: React.Dispatch<React.SetStateAction<string>>, value: string) => {
@@ -169,7 +166,15 @@ function App() {
           {isDark ? '☀️' : '🌙'}
         </button>
         <h1>TSP Maximizer</h1>
-        <p>Optimize your Thrift Savings Plan to hit the max limit precisely while capturing every dollar of agency match.</p>
+        <p>
+          Optimize your Thrift Savings Plan to hit the max limit precisely while capturing every dollar of agency match.{' '}
+          <span className="tooltip-wrapper tooltip-wrapper--hero" aria-label="Disclaimer">
+            <span className="tooltip-icon">ⓘ</span>
+            <span className="tooltip-content">
+              <strong>Not financial advice.</strong> This tool is for informational purposes only and does not constitute financial, tax, or investment advice. Calculations are based on publicly available payroll rules and may not reflect your specific situation. Use at your own risk.
+            </span>
+          </span>
+        </p>
         <button className="reset-btn" onClick={handleReset}>Reset to Defaults</button>
       </header>
       
@@ -177,7 +182,7 @@ function App() {
         <section className="card form-section">
           <div className="section-header">
             <h2>Financial Details</h2>
-            <button className="clear-btn" onClick={handleClearAll}>Clear All</button>
+            <button className="clear-btn" onClick={handleClearYtdInputs}>Clear YTD Inputs</button>
           </div>
           <div className="input-grid">
             <div className="input-group">

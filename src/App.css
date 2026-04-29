@@ -505,3 +505,20 @@
   visibility: visible;
   transform: translateY(5px);
 }
+
+.tooltip-wrapper--hero {
+  color: var(--text-muted);
+  font-weight: 400;
+  margin-top: 0;
+  vertical-align: middle;
+}
+
+.tooltip-wrapper--hero .tooltip-content {
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  width: 320px;
+}
+
+.tooltip-wrapper--hero:hover .tooltip-content {
+  transform: translateX(-50%) translateY(5px);
+}
