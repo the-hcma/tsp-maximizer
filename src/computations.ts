@@ -8,9 +8,9 @@ export interface ProjectionParams {
   agencyAutoSoFar: number;
   maxAnnualContribution: number;
   autoContributionPercent: number; // e.g. 1 means 1 %
-  maxMatchPercent: number;         // e.g. 4 means 4 %
+  maxMatchPercent: number; // e.g. 4 means 4 %
   remainingPayPeriods: number;
-  ratePercent: number;             // 0–100
+  ratePercent: number; // 0–100
 }
 
 export interface ProjectionResult {
@@ -80,7 +80,14 @@ export function projectStrategy(p: ProjectionParams): ProjectionResult {
     }
   }
 
-  return { totalContribution: tempContribution, totalMatch: tempMatch, totalAuto: tempAuto, periodsWithLostMatch, hitLimitEarly, lostMatchAmount };
+  return {
+    totalContribution: tempContribution,
+    totalMatch: tempMatch,
+    totalAuto: tempAuto,
+    periodsWithLostMatch,
+    hitLimitEarly,
+    lostMatchAmount,
+  };
 }
 
 /**
@@ -115,15 +122,11 @@ export interface ValidationParams {
 /** Returns an array of human-readable error strings; empty means valid. */
 export function validateInputs(p: ValidationParams): string[] {
   const errors: string[] = [];
-  if (p.basePay < 0)
-    errors.push('Base pay cannot be negative.');
-  if (p.contributedSoFar < 0)
-    errors.push('Contributed so far cannot be negative.');
+  if (p.basePay < 0) errors.push('Base pay cannot be negative.');
+  if (p.contributedSoFar < 0) errors.push('Contributed so far cannot be negative.');
   if (p.contributedSoFar > p.maxAnnualContribution)
     errors.push('Contributed so far cannot exceed the max annual contribution.');
-  if (p.agencyMatchSoFar < 0)
-    errors.push('Agency match so far cannot be negative.');
-  if (p.agencyAutoSoFar < 0)
-    errors.push('Agency auto contribution so far cannot be negative.');
+  if (p.agencyMatchSoFar < 0) errors.push('Agency match so far cannot be negative.');
+  if (p.agencyAutoSoFar < 0) errors.push('Agency auto contribution so far cannot be negative.');
   return errors;
 }
