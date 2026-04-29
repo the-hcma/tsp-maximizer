@@ -26,27 +26,29 @@ Federal payroll systems strictly calculate agency matching on a per-pay-period b
 
 This tool dynamically simulates the exact mathematical mechanics of federal payroll processors (like DFAS and NFC) to help you choose the precise contribution percentage needed to safely max out your IRS limit without leaving any matching money on the table.
 
-## Features
-- **Real-Time Strategy Comparison:** Compare your current contribution trajectory against the mathematically "Optimal" strategy and the "Capture the Max Match" (minimum impact) strategy side-by-side.
-- **Fractional Pay Period Simulation:** Accurately models the exact edge cases of federal payroll, such as hitting the IRS limit mid-pay-period and evaluating if the fractional spillover is large enough to trigger the 5% matching threshold.
-- **Dynamic Lost Match Alerts:** Explicitly calculates and warns you exactly how many dollars of agency matching you are leaving on the table if you undercontribute or overcontribute.
-- **Premium Interface:** Built with a fully responsive, glassmorphic UI with dark and light mode support.
+## Running It
 
-## Quick Start
-
-Run directly from npm — no installation required:
+No installation required — just run:
 
 ```bash
 npx @the-hcma/tsp-maximizer
 ```
 
-This serves the app locally and **opens it automatically in your browser**. Requires Node.js 18+.
+This opens the app automatically in your browser. Requires Node.js 18+.
 
-To expose the server on your local network (e.g. for mobile testing or a headless server):
+> **Don't have Node.js?** Download it from [nodejs.org](https://nodejs.org) (choose the LTS version).
+
+To access it from another device on your network (e.g. your phone, or a remote machine):
 
 ```bash
 npx @the-hcma/tsp-maximizer --host
 ```
+
+## Features
+- **Real-Time Strategy Comparison:** Compare your current contribution trajectory against the mathematically "Optimal" strategy and the "Capture the Max Match" (minimum impact) strategy side-by-side.
+- **Fractional Pay Period Simulation:** Accurately models the exact edge cases of federal payroll, such as hitting the IRS limit mid-pay-period and evaluating if the fractional spillover is large enough to trigger the 5% matching threshold.
+- **Dynamic Lost Match Alerts:** Explicitly calculates and warns you exactly how many dollars of agency matching you are leaving on the table if you undercontribute or overcontribute.
+- **Premium Interface:** Built with a fully responsive, glassmorphic UI with dark and light mode support.
 
 ## Getting Started (Development)
 
