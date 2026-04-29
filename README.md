@@ -30,7 +30,15 @@ This tool dynamically simulates the exact mathematical mechanics of federal payr
 
 ### No-install (run directly with npx)
 
-If you prefer not to install anything globally, you can run it on demand:
+If you prefer not to install anything globally, you can run it on demand.
+
+To run `tsp-maximizer`, you must open your command-line interface:
+
+- **macOS**: Open the **Terminal** app (press `Cmd + Space`, type "Terminal", and press Enter).
+- **Windows**: Open **PowerShell** or **Command Prompt** (press the Windows key, type "PowerShell", and press Enter).
+- **Linux**: Open your preferred terminal emulator (e.g., GNOME Terminal, Konsole).
+
+Once your terminal is open, copy and paste the following command:
 
 ```bash
 npx @the-hcma/tsp-maximizer
