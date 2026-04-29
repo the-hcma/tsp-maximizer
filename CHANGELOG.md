@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0](https://github.com/the-hcma/tsp-maximizer/compare/v1.2.0...v1.3.0) (2026-04-29)
+
+
+### Features
+
+* auto-inject version from package.json and add documentation footer link ([#14](https://github.com/the-hcma/tsp-maximizer/issues/14)) ([b3264b8](https://github.com/the-hcma/tsp-maximizer/commit/b3264b8c29068d357b01f8f867d6f5823cba3e66))
+* bump APP_VERSION to 1.2.0 and add help link to README ([cf90280](https://github.com/the-hcma/tsp-maximizer/commit/cf902803be2560d6a8a954d1e5d916be66d1e50f))
+
 ## [1.2.0](https://github.com/the-hcma/tsp-maximizer/compare/v1.1.0...v1.2.0) (2026-04-29)
 
 
