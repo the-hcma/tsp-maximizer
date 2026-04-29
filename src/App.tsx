@@ -5,7 +5,7 @@ import { projectStrategy, computeOptimalRate } from './computations';
 const DEFAULTS = {
   basePay: 6177.3,
   contributedSoFar: 8524.69,
-  currentRate: 33,
+  currentRate: 20,
   agencyAutoSoFar: 247.08,
   agencyMatchSoFar: 988.36,
   maxAnnualContribution: 24500,
