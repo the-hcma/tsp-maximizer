@@ -67,6 +67,17 @@ function App() {
     setCurrentPeriod(today.getMonth() + (today.getDate() > 15 ? 1 : 0));
   };
 
+  const handleClearAll = () => {
+    setBasePayInput('0.00');
+    setContributedSoFarInput('0.00');
+    setCurrentRateStr('0');
+    setAgencyAutoSoFarInput('0.00');
+    setAgencyMatchSoFarInput('0.00');
+    setMaxAnnualContributionInput('0.00');
+    setTotalPayPeriods(0);
+    setCurrentPeriod(0);
+  };
+
   const handleMoneyBlur = (setter: React.Dispatch<React.SetStateAction<string>>, value: string) => {
     const num = Number(value);
     if (!isNaN(num)) {
@@ -166,6 +177,7 @@ function App() {
         <section className="card form-section">
           <div className="section-header">
             <h2>Financial Details</h2>
+            <button className="clear-btn" onClick={handleClearAll}>Clear All</button>
           </div>
           <div className="input-grid">
             <div className="input-group">
