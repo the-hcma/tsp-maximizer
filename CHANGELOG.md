@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.2.0](https://github.com/the-hcma/tsp-maximizer/compare/v1.1.0...v1.2.0) (2026-04-29)
+
+
+### Features
+
+* add Clear All button to reset user input fields to zero ([e04034a](https://github.com/the-hcma/tsp-maximizer/commit/e04034a12ea233e7615c10b349f59cdb15b7257f))
+* add disclaimer tooltip to hero and clear YTD inputs button ([#10](https://github.com/the-hcma/tsp-maximizer/issues/10)) ([3eb64dd](https://github.com/the-hcma/tsp-maximizer/commit/3eb64dd6878c28a22e74be775085f59ade1e46d5))
+* add global CLI (tsp-maximizer) and npx support via bin entry point ([390ef10](https://github.com/the-hcma/tsp-maximizer/commit/390ef10c224d0488a92686e98ed4fd12234a9cd2))
+* auto-install dependencies when running pnpm dev in a fresh worktree ([#12](https://github.com/the-hcma/tsp-maximizer/issues/12)) ([41faa4a](https://github.com/the-hcma/tsp-maximizer/commit/41faa4abf9cbfb9476efd3e5e5209e9bd2e3b9bb))
+* auto-open browser on dev start with headless display detection ([9422b63](https://github.com/the-hcma/tsp-maximizer/commit/9422b63c18e766f1ec792ee9cd79fa7da8691032))
+* version badge, comma-formatted numbers, text inputs without spinners ([4a41b25](https://github.com/the-hcma/tsp-maximizer/commit/4a41b25c0f07aab99cda71023e2e3f26b12d0f32))
+
+
+### Bug Fixes
+
+* add repository metadata, prettier devdep, format:check CI step ([#11](https://github.com/the-hcma/tsp-maximizer/issues/11)) ([85e22df](https://github.com/the-hcma/tsp-maximizer/commit/85e22dfe7ee2e8d165c0be6e2034e01e61c077c7))
+* lower default contribution rate from 33% to 20% ([#13](https://github.com/the-hcma/tsp-maximizer/issues/13)) ([431a007](https://github.com/the-hcma/tsp-maximizer/commit/431a0072cf81ae838cef3377bb34e172d505ca7c))
+
 ## [1.1.0](https://github.com/the-hcma/tsp-maximizer/compare/v1.0.0...v1.1.0) (2026-04-28)
 
 
