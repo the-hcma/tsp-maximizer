@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.4.1](https://github.com/the-hcma/tsp-maximizer/compare/v1.4.0...v1.4.1) (2026-06-11)
+
+
+### Bug Fixes
+
+* **ci:** delete Graphite MQ staging branches when PR closes ([#69](https://github.com/the-hcma/tsp-maximizer/issues/69)) ([a547404](https://github.com/the-hcma/tsp-maximizer/commit/a547404566da59ee3eb94aca41f9b2ad64d6d257))
+* **ci:** sync canonical secret-scan script ([#65](https://github.com/the-hcma/tsp-maximizer/issues/65)) ([403bc20](https://github.com/the-hcma/tsp-maximizer/commit/403bc201df135227455a8ae84403b762846ce06b))
+* **ci:** sync canonical secret-scan script ([#68](https://github.com/the-hcma/tsp-maximizer/issues/68)) ([69db324](https://github.com/the-hcma/tsp-maximizer/commit/69db324ee4ea5c6395cab12cbb0d14dda1ba1482))
+* **ci:** use canonical secret-scan job ([#66](https://github.com/the-hcma/tsp-maximizer/issues/66)) ([4170aca](https://github.com/the-hcma/tsp-maximizer/commit/4170acaaf257bad7c13a32aa8a0a3cb1cd2b71a0))
+
 ## [1.4.0](https://github.com/the-hcma/tsp-maximizer/compare/v1.3.0...v1.4.0) (2026-04-29)
 
 
