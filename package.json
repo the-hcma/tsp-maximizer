@@ -1,6 +1,6 @@
 {
   "name": "@the-hcma/tsp-maximizer",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "A no-install web calculator to maximize TSP contributions and agency matching for federal employees.",
   "license": "MIT",
   "repository": {
