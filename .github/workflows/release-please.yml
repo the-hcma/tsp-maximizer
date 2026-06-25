@@ -89,7 +89,7 @@ jobs:
           fi
           echo "Version confirmed: $pkg_version"
 
-      - uses: pnpm/action-setup@v6.0.8
+      - uses: pnpm/action-setup@v6.0.9
         with:
           version: latest
           
