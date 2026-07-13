@@ -89,10 +89,9 @@ jobs:
           fi
           echo "Version confirmed: $pkg_version"
 
+      # Omit `version` — use package.json `packageManager` (not `latest`; see ci.yml).
       - uses: pnpm/action-setup@v6.0.9
-        with:
-          version: latest
-          
+
       - uses: actions/setup-node@v6.4.0
         with:
           node-version: '24'
