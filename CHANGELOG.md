@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.4.2](https://github.com/the-hcma/tsp-maximizer/compare/v1.4.1...v1.4.2) (2026-08-13)
+
+
+### Bug Fixes
+
+* **ci:** harden Graphite restack guard push dedup ([#87](https://github.com/the-hcma/tsp-maximizer/issues/87)) ([ebb743e](https://github.com/the-hcma/tsp-maximizer/commit/ebb743eda41e5a55a253479ac5a91d8c278f457b))
+* **ci:** key CI concurrency on head SHA ([#71](https://github.com/the-hcma/tsp-maximizer/issues/71)) ([10bb3b3](https://github.com/the-hcma/tsp-maximizer/commit/10bb3b365d194f36c3b87cd49b224d848e47875b))
+* **ci:** key CI concurrency on head SHA ([#99](https://github.com/the-hcma/tsp-maximizer/issues/99)) ([5dd2b6f](https://github.com/the-hcma/tsp-maximizer/commit/5dd2b6fc9250c471f07622aaab3959d01d649e9d))
+* **ci:** run CI on Graphite restack (push fallback + guard dedup) ([#76](https://github.com/the-hcma/tsp-maximizer/issues/76)) ([45bb82d](https://github.com/the-hcma/tsp-maximizer/commit/45bb82d79538bbc5e3af4a10d44f2fea81829ab4))
+* **ci:** skip duplicate push CI when open PR exists ([#84](https://github.com/the-hcma/tsp-maximizer/issues/84)) ([95e3c8b](https://github.com/the-hcma/tsp-maximizer/commit/95e3c8b16d7d2f3ec06a2253a035551327abee1a))
+* **ci:** sync canonical secret-scan script ([#136](https://github.com/the-hcma/tsp-maximizer/issues/136)) ([c47fc27](https://github.com/the-hcma/tsp-maximizer/commit/c47fc2724c3da7d53087ec35284ded8394c7a26f))
+* **ci:** trigger CI on merge_group for GitHub MQ ([#145](https://github.com/the-hcma/tsp-maximizer/issues/145)) ([6393811](https://github.com/the-hcma/tsp-maximizer/commit/63938116542a5c7614e256fde02027c5dfd6006f))
+
 ## [1.4.1](https://github.com/the-hcma/tsp-maximizer/compare/v1.4.0...v1.4.1) (2026-06-11)
 
 
