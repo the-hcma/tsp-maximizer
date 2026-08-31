@@ -1,0 +1,68 @@
+---
+description: All remote/network I/O must use explicit timeouts and bounded retries
+alwaysApply: true
+---
+
+# Remote timeouts and retries
+
+This repo currently does **no** remote/network I/O — the TSP optimizer runs
+entirely offline. This rule is a **forward guardrail**: the first time any code
+here talks to a network peer (an HTTP API, a `fetch()` from a future UI, a
+webhook, a package index, a `gh`/`curl` helper), it must follow the constraints
+below. Org template sync: repository-helpers#570.
+
+## Timeouts (required)
+
+- Set an **explicit timeout** on every remote call (connect + read, or a single
+  overall deadline the library supports). `fetch()` has no default timeout — pass
+  an `AbortSignal.timeout(ms)`. Node `http`/`https`, `undici`, and any SDK client
+  get a finite, documented timeout from a shared config value — never library
+  defaults that mean "wait forever".
+- Agent / shell wrappers that hit the network should use the helpers'
+  `--timeout` / `run_command … --timeout` patterns when available.
+
+## Retries (required when retrying)
+
+- **Retryable set:** network errors / timeout / connection reset, and HTTP
+  `408`, `429`, `502`, `503`, `504`. Everything else — including `400`, `401`,
+  `403`, `404`, `500`, `501` — is permanent; surface it, don't retry.
+- Cap attempts (small fixed `N`, 2–5) **or** a total retry budget. Back off
+  between attempts (exponential with jitter). Honor `Retry-After` when the peer
+  sends it, clamped to a ceiling with a wall-clock deadline.
+- Do **not** retry a non-idempotent write (`POST`/`PUT`/`PATCH`/`DELETE`) unless
+  the API contract is safe (dedupe keys / explicit idempotency). Idempotent reads
+  are safe to retry within budget. Prefer fail fast on 4xx except `408` / `429`.
+- Log or surface a clear timeout / retry-exhaustion error (non-zero CLI exit /
+  visible error) — never spin silently.
+
+## Anti-patterns
+
+```ts
+// bad — no timeout
+const res = await fetch(url);
+
+// bad — unbounded retry
+while (true) {
+  try { return await fetch(url); }
+  catch { /* forever */ }
+}
+```
+
+```ts
+// good — explicit timeout + bounded, backed-off retry of an idempotent read
+const RETRYABLE = new Set([408, 429, 502, 503, 504]);
+for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+  try {
+    const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) });
+    if (res.ok || !RETRYABLE.has(res.status)) return res; // permanent -> stop
+  } catch (e) {
+    const retryable =
+      e instanceof TypeError || // network failure ("fetch failed")
+      (e instanceof DOMException &&
+        (e.name === 'TimeoutError' || e.name === 'AbortError')); // AbortSignal.timeout() / manual abort
+    if (!retryable) throw e;
+  }
+  if (attempt === maxAttempts) throw new Error('request timed out / retries exhausted');
+  await new Promise((r) => setTimeout(r, backoffMs * 2 ** (attempt - 1)));
+}
+```
