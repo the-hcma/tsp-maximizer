@@ -153,6 +153,12 @@ The **primary clone** (repo root — first entry in `git worktree list`, usually
 - No dynamic `eval`, `new Function`, or `innerHTML` assignments with user-controlled strings.
 - All user inputs must be validated and sanitised before use in computations (reject NaN, Infinity, and out-of-range values at the boundary).
 - Dependencies must be reviewed before adding. Run `pnpm audit` after every `pnpm install`.
+- **Remote timeouts and bounded retries:** `.cursor/rules/remote-timeouts-retries.mdc`
+  (`alwaysApply`, org rule — template sync
+  [repository-helpers#570](https://github.com/the-hcma/repository-helpers/issues/570)).
+  This repo does no network I/O today; the rule is a forward guardrail for the
+  first `fetch()` / HTTP client added — explicit timeout, bounded/backed-off
+  transient-only retries, no re-send of non-idempotent writes.
 
 ---
 
