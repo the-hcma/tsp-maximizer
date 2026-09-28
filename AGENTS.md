@@ -7,6 +7,7 @@ This file defines the non-negotiable standards for all contributors (human or AI
 ## Session Startup & Cleanup
 
 - At the **start of every agent session**, before acting from assumed conventions, read this `AGENTS.md` in full, then read every `alwaysApply: true` rule under `.cursor/rules/*.mdc` (plus any whose `globs` match files you will touch) — `AGENTS.md` and `.cursor/rules/` together are the contract. `CLAUDE.md` (a `@AGENTS.md` import) and `.github/copilot-instructions.md` are thin shims so Claude Code and Copilot reach the same guidance.
+- Markdown files you commit, this one included, use one physical line per paragraph, list item and blockquote, with no hard line breaks (see `.agents/rules/github-content-formatting.md`).
 - **Mandatory Action**: At the beginning of every session (before starting any task), run `/a_star/home/hcma/work/ai/repository-helpers/scripts/dev/start-development`.
 - This script cleans up merged worktrees, prunes stale metadata, and runs `gt sync --force` to keep your local environment synchronized with the remote.
 - By default it prompts for a new stack name and creates a new worktree under `.worktrees/<stack-name>-wt` ready for work.
@@ -154,12 +155,7 @@ The **primary clone** (repo root — first entry in `git worktree list`, usually
 - No dynamic `eval`, `new Function`, or `innerHTML` assignments with user-controlled strings.
 - All user inputs must be validated and sanitised before use in computations (reject NaN, Infinity, and out-of-range values at the boundary).
 - Dependencies must be reviewed before adding. Run `pnpm audit` after every `pnpm install`.
-- **Remote timeouts and bounded retries:** `.cursor/rules/remote-timeouts-retries.mdc`
-  (`alwaysApply`, org rule — template sync
-  [repository-helpers#570](https://github.com/the-hcma/repository-helpers/issues/570)).
-  This repo does no network I/O today; the rule is a forward guardrail for the
-  first `fetch()` / HTTP client added — explicit timeout, bounded/backed-off
-  transient-only retries, no re-send of non-idempotent writes.
+- **Remote timeouts and bounded retries:** `.cursor/rules/remote-timeouts-retries.mdc` (`alwaysApply`, org rule — template sync [repository-helpers#570](https://github.com/the-hcma/repository-helpers/issues/570)). This repo does no network I/O today; the rule is a forward guardrail for the first `fetch()` / HTTP client added — explicit timeout, bounded/backed-off transient-only retries, no re-send of non-idempotent writes.
 
 ---
 
