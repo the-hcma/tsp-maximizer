@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.3](https://github.com/the-hcma/tsp-maximizer/compare/v1.4.2...v1.4.3) (2026-10-24)
+
+
+### Bug Fixes
+
+* use the gh-stack submit block in the pr-ship rule ([#230](https://github.com/the-hcma/tsp-maximizer/issues/230)) ([1b4181a](https://github.com/the-hcma/tsp-maximizer/commit/1b4181ae39585c3e91a35ab8bf51bab87ecf3d09))
+
 ## [1.4.2](https://github.com/the-hcma/tsp-maximizer/compare/v1.4.1...v1.4.2) (2026-08-13)
 
 
