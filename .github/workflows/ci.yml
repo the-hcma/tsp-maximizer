@@ -94,19 +94,10 @@ jobs:
       # Do not use pnpm/action-setup or setup-node cache: 'pnpm'.
       - uses: the-hcma/repository-helpers/actions/setup-pnpm-corepack@999844287d1b2684baa91c3e8a5b62eda9f4915e
 
-      - name: Install dependencies
-        run: |
-          rm -rf node_modules
-          pnpm install --frozen-lockfile
+      - uses: the-hcma/repository-helpers/actions/setup-tmp-layout@bfee0e1f2d682e83c6207a0d6a0f7feefa576fd8
 
-      - name: Type check + lint
-        run: pnpm run check
-
-      - name: Format check
-        run: pnpm run format:check
-
-      - name: Unit tests
-        run: pnpm test
+      - name: Install, check, format and test
+        run: bash .github/ci/web-check
 
   secret-scan:
     name: Secret Scan
