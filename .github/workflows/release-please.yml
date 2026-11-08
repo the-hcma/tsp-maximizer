@@ -95,12 +95,18 @@ jobs:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
       - uses: the-hcma/repository-helpers/actions/setup-pnpm-corepack@999844287d1b2684baa91c3e8a5b62eda9f4915e
-          
+
+      - uses: the-hcma/repository-helpers/actions/setup-tmp-layout@bfee0e1f2d682e83c6207a0d6a0f7feefa576fd8
+
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-        
+        run: |
+          layout="$REPOSITORY_HELPERS_DIR/scripts/dev/with-tmp-layout"
+          "$layout" pnpm -- pnpm install --frozen-lockfile
+
       - name: Validate & Build Project
-        run: pnpm run check && pnpm run test && pnpm run build
+        run: |
+          layout="$REPOSITORY_HELPERS_DIR/scripts/dev/with-tmp-layout"
+          "$layout" pnpm -- bash -c 'pnpm run check && pnpm run test && pnpm run build'
 
       - name: Get package version
         id: get-version
@@ -116,7 +122,9 @@ jobs:
         #   Repo:     tsp-maximizer
         #   Workflow: release-please.yml
         #   Env:      npm-production
-        run: pnpm publish --ignore-scripts --no-git-checks --access public --provenance
+        run: |
+          layout="$REPOSITORY_HELPERS_DIR/scripts/dev/with-tmp-layout"
+          "$layout" pnpm -- pnpm publish --ignore-scripts --no-git-checks --access public --provenance
 
   smoke-test:
     name: Post-publish smoke test
