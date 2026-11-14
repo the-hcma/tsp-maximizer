@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.5.0](https://github.com/the-hcma/tsp-maximizer/compare/v1.4.2...v1.5.0) (2026-11-14)
+
+
+### Features
+
+* **ci:** lay out pnpm temp files under TMPDIR/&lt;project&gt;/&lt;branch&gt;/&lt;tool&gt; ([#239](https://github.com/the-hcma/tsp-maximizer/issues/239)) ([8fa7f13](https://github.com/the-hcma/tsp-maximizer/commit/8fa7f13f4b1b82b98bb11f67ad4126cfa9b2d575))
+
+
+### Bug Fixes
+
+* use the gh-stack submit block in the pr-ship rule ([#230](https://github.com/the-hcma/tsp-maximizer/issues/230)) ([1b4181a](https://github.com/the-hcma/tsp-maximizer/commit/1b4181ae39585c3e91a35ab8bf51bab87ecf3d09))
+
 ## [1.4.2](https://github.com/the-hcma/tsp-maximizer/compare/v1.4.1...v1.4.2) (2026-08-13)
 
 
